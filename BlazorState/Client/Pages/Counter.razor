@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavManager
+@inject DAppState DState;
+@inject JSStorage JsStorage;
+
+
+@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<p role="status">ApplicationState Counter Value: @ApplicationState.Counter</p>
+
+<p role="status">Dependency State Counter Value: @DState.Counter</p>
+
+<p role="status">BrowserStorage State Counter Value: @CounterBrowser</p>
+
+
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+<button class="btn btn-primary" @onclick="TransportState">Navigate</button>
+
+@code {
+    private int currentCount = 0;
+
+    [CascadingParameter]
+    public AppState ApplicationState { get; set; }
+
+    public int CounterBrowser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CounterBrowser = Convert.ToInt32(await JsStorage.Read("counter"));
+    }
+
+    private async Task IncrementCount()
+    {
+        ApplicationState.Counter++;
+        currentCount++;
+        DState.Counter++;
+        CounterBrowser++;
+        await JsStorage.Save("counter", CounterBrowser.ToString());
+    }
+
+    private void TransportState()
+    {
+        Dictionary<string, string> vars = new Dictionary<string, string>
+        {
+            {"counter", currentCount.ToString()}
+        };
+
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("fetchdata", vars));
+    }
+
+}

@@ -1,0 +1,19 @@
+﻿@page "/"
+@inject DAppState DState;
+@inject JSStorage JsStorage;
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<p role="status">ApplicationState Counter Value: @ApplicationState.Counter</p>
+<p role="status">Dependency State Counter Value: @DState.Counter</p>
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    [CascadingParameter]
+    public AppState ApplicationState { get; set; }
+}
